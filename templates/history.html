@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <div class="max-w-5xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Scan History</h1>
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto border-collapse border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border px-4 py-2">Timestamp</th>
+            <th class="border px-4 py-2">Input</th>
+            <th class="border px-4 py-2">Type</th>
+            <th class="border px-4 py-2">Verdict</th>
+            <th class="border px-4 py-2">Final Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in history %}
+          <tr class="{{ loop.index0 % 2 == 0 and 'bg-gray-50' or 'bg-white' }}">
+            <td class="border px-4 py-2">{{ item.timestamp }}</td>
+            <td class="border px-4 py-2 break-words max-w-xs">{{ item.input }}</td>
+            <td class="border px-4 py-2">{{ item.type }}</td>
+            <td class="border px-4 py-2 font-bold {{ item.verdict=='phishing' and 'text-red-600' or 'text-green-600' }}">{{ item.verdict }}</td>
+            <td class="border px-4 py-2">{{ item.final_score }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center py-4 text-gray-500">No history available</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-6 text-center">
+      <a href="/" class="text-blue-500 hover:underline">Back to Scanner</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+[
+  {
+    "input": "https://www.smbs.verify.co.jp.index.007ikm.help/ja",
+    "verdict": "phishing",
+    "final_score": 0.9611,
+    "timestamp": "2025-10-28 10:26:11"
+  },
+  {
+    "input": "https://v-vpass-jp.dtlxi.cn",
+    "verdict": "legitimate",
+    "final_score": 0.2439,
+    "timestamp": "2025-10-28 10:25:17"
+  },
+  {
+    "input": "https://s.shzs9.com/accounts/login/?aZ8Kp2WmR7xLqT...",
+    "domain": "s.shzs9.com",
+    "features": {
+      "url_length": 53.0,
+      "hostname_length": 11.0,
+      "path_length": 16.0,
+      "count_at": 0.0,
+      "count_dash": 0.0,
+      "count_dot": 5.0,
+      "count_digits": 4.0,
+      "count_slash": 5.0,
+      "suspicious_token": 1.0,
+      "has_ip": 0.0,
+      "is_trusted_domain": 0.0
+    },
+    "per_model": {
+      "lr": 0.9995500789029091,
+      "rf": 1.0,
+      "nb": 1.0,
+      "xgb": 0.999376118183136,
+      "lgbm": 0.9999993937783533
+    },
+    "ml_probability": 0.9998,
+    "heuristic_score": 0.32,
+    "final_score": 0.9658,
+    "threshold": 0.5,
+    "verdict": "phishing",
+    "reasons": [
+      "suspicious words: account, login",
+      "lr extremely confident (1.00)",
+      "rf extremely confident (1.00)",
+      "nb extremely confident (1.00)",
+      "xgb extremely confident (1.00)",
+      "lgbm extremely confident (1.00)"
+    ],
+    "timestamp": "2025-10-28 01:16:29",
+    "model_meta": {}
+  },
+  {
+    "input": "https://s.shzs9.com/accounts/login/?aZ8Kp2WmR7xLqT...",
+    "domain": "s.shzs9.com",
+    "features": {
+      "url_length": 53.0,
+      "hostname_length": 11.0,
+      "path_length": 16.0,
+      "count_at": 0.0,
+      "count_dash": 0.0,
+      "count_dot": 5.0,
+      "count_digits": 4.0,
+      "count_slash": 5.0,
+      "suspicious_token": 1.0,
+      "has_ip": 0.0,
+      "is_trusted_domain": 0.0
+    },
+    "per_model": {
+      "lr": 0.9995500789029091,
+      "rf": 1.0,
+      "nb": 1.0,
+      "xgb": 0.999376118183136,
+      "lgbm": 0.9999993937783533
+    },
+    "ml_probability": 0.9998,
+    "heuristic_score": 0.4,
+    "final_score": 0.8798,
+    "threshold": 0.5,
+    "verdict": "phishing",
+    "reasons": [
+      "contains suspicious words: account, login",
+      "lr extremely confident (1.00)",
+      "rf extremely confident (1.00)",
+      "nb extremely confident (1.00)",
+      "xgb extremely confident (1.00)",
+      "lgbm extremely confident (1.00)"
+    ],
+    "timestamp": "2025-10-28 01:02:28"
+  },
+  {
+    "input": "https://consulta8-ag0ra24h.online/resolva.html?utm",
+    "domain": "consulta8-ag0ra24h.online",
+    "features": {
+      "url_length": 50.0,
+      "hostname_length": 25.0,
+      "path_length": 13.0,
+      "count_at": 0.0,
+      "count_dash": 1.0,
+      "count_dot": 2.0,
+      "count_digits": 4.0,
+      "count_slash": 3.0,
+      "suspicious_token": 0.0,
+      "has_ip": 0.0,
+      "is_trusted_domain": 0.0
+    },
+    "per_model": {
+      "lr": 0.9528264839655534,
+      "rf": 0.75,
+      "nb": 1.0,
+      "xgb": 0.999376118183136,
+      "lgbm": 0.9999993937783533
+    },
+    "ml_probability": 0.9404,
+    "heuristic_score": 0.0,
+    "final_score": 0.7524,
+    "threshold": 0.5,
+    "verdict": "phishing",
+    "reasons": [
+      "lr extremely confident (0.95)",
+      "nb extremely confident (1.00)",
+      "xgb extremely confident (1.00)",
+      "lgbm extremely confident (1.00)"
+    ],
+    "timestamp": "2025-10-28 01:00:56"
+  },
+  {
+    "input": "https://consulta8-ag0ra24h.online/resolva.html?utm...",
+    "domain": "consulta8-ag0ra24h.online",
+    "features": {
+      "url_length": 53.0,
+      "hostname_length": 25.0,
+      "path_length": 13.0,
+      "count_at": 0.0,
+      "count_dash": 1.0,
+      "count_dot": 5.0,
+      "count_digits": 4.0,
+      "count_slash": 3.0,
+      "suspicious_token": 0.0,
+      "has_ip": 0.0,
+      "is_trusted_domain": 0.0
+    },
+    "per_model": {
+      "lr": 0.9627187998793448,
+      "rf": 0.75,
+      "nb": 1.0,
+      "xgb": 0.999376118183136,
+      "lgbm": 0.9999993937783533
+    },
+    "ml_probability": 0.9424,
+    "heuristic_score": 0.0,
+    "final_score": 0.7539,
+    "threshold": 0.5,
+    "verdict": "phishing",
+    "reasons": [
+      "lr extremely confident (0.96)",
+      "nb extremely confident (1.00)",
+      "xgb extremely confident (1.00)",
+      "lgbm extremely confident (1.00)"
+    ],
+    "timestamp": "2025-10-28 00:42:11"
+  },
+  {
+    "input": "https://internitico.buzz",
+    "domain": "internitico.buzz",
+    "features": {
+      "url_length": 24.0,
+      "hostname_length": 16.0,
+      "path_length": 0.0,
+      "count_at": 0.0,
+      "count_dash": 0.0,
+      "count_dot": 1.0,
+      "count_digits": 0.0,
+      "count_slash": 2.0,
+      "suspicious_token": 0.0,
+      "has_ip": 0.0,
+      "is_trusted_domain": 0.0
+    },
+    "per_model": {
+      "lr": 0.001837247262234405,
+      "rf": 0.12,
+      "nb": 0.0,
+      "xgb": 0.0006069589871913195,
+      "lgbm": 5.906326158389219e-07
+    },
+    "ml_probability": 0.0245,
+    "heuristic_score": 0.0,
+    "final_score": 0.0196,
+    "threshold": 0.5,
+    "verdict": "legitimate",
+    "reasons": [],
+    "timestamp": "2025-10-28 00:41:32"
+  }
+]

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+<!-- Header -->
+<header class="bg-blue-700 text-white shadow p-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold">{{ title }}</h1>
+  <a href="{{ url_for('logout') }}" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded">Logout</a>
+</header>
+
+<main class="container mx-auto p-4 space-y-6">
+
+  <!-- Settings -->
+  <section class="bg-white rounded-lg shadow p-4 space-y-4">
+    <h2 class="text-xl font-semibold mb-2">Model & Threshold Settings</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="font-semibold">Threshold:</label>
+        <input id="threshold" type="number" step="0.01" min="0" max="1" value="{{ settings.threshold }}" class="border rounded px-3 py-2 w-full">
+      </div>
+      <div>
+        <label class="font-semibold">ML Weight:</label>
+        <input id="ml_weight" type="number" step="0.01" min="0" max="1" value="{{ settings.ml_weight }}" class="border rounded px-3 py-2 w-full">
+      </div>
+    </div>
+    <button id="saveSettings" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Save Settings</button>
+    <div id="saveNotif" class="hidden text-green-600 font-semibold mt-2">Settings saved!</div>
+  </section>
+
+  <!-- Trusted Domains -->
+  <section class="bg-white rounded-lg shadow p-4 space-y-2">
+    <h2 class="text-xl font-semibold mb-2">Trusted Domains</h2>
+    <div class="flex gap-2">
+      <input id="newDomain" type="text" placeholder="Add trusted domain" class="border rounded px-3 py-2 flex-1">
+      <button id="addDomain" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Add</button>
+    </div>
+    <ul id="trustedList" class="list-disc pl-5 mt-2">
+      {% for domain in settings.trusted_domains %}
+      <li class="flex justify-between items-center mb-1">
+        <span>{{ domain }}</span>
+        <button class="removeDomain bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Remove</button>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- History -->
+  <section class="bg-white rounded-lg shadow p-4 overflow-x-auto">
+    <h2 class="text-xl font-semibold mb-2">Scan History</h2>
+    <button id="clearHistory" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded mb-2">Clear History</button>
+    <table class="w-full table-auto border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border px-4 py-2">User ID</th>
+          <th class="border px-4 py-2">Timestamp</th>
+          <th class="border px-4 py-2">Input</th>
+          <th class="border px-4 py-2">Type</th>
+          <th class="border px-4 py-2">Verdict</th>
+          <th class="border px-4 py-2">Score</th>
+          <th class="border px-4 py-2">Details</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable">
+        {% for item in history|reverse %}
+        <tr class="hover:bg-gray-50">
+          <td class="border px-4 py-2">{{ item.user_id or 'guest' }}</td>
+          <td class="border px-4 py-2">{{ item.timestamp }}</td>
+          <td class="border px-4 py-2">{{ item.input }}</td>
+          <td class="border px-4 py-2">{{ item.type }}</td>
+          <td class="border px-4 py-2 font-semibold text-{{ 'red-500' if item.verdict=='phishing' else 'yellow-500' if item.verdict=='suspicious' else 'green-500' }}">{{ item.verdict }}</td>
+          <td class="border px-4 py-2">{{ item.final_score }}</td>
+          <td class="border px-4 py-2">
+            <button class="bg-blue-600 text-white px-2 py-1 rounded" onclick="showDetails({{ loop.index0 }})">View</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg shadow p-6 max-w-xl w-full max-h-[80%] overflow-auto">
+    <h3 class="text-xl font-semibold mb-2">Scan Details</h3>
+    <pre id="modalContent" class="bg-gray-100 p-2 rounded overflow-auto"></pre>
+    <button onclick="closeModal()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Close</button>
+  </div>
+</div>
+
+<script>
+const trustedList = document.getElementById('trustedList');
+const newDomain = document.getElementById('newDomain');
+const addDomain = document.getElementById('addDomain');
+const saveSettingsBtn = document.getElementById('saveSettings');
+const saveNotif = document.getElementById('saveNotif');
+
+function updateTrustedUI(domains) {
+  trustedList.innerHTML = '';
+  domains.forEach(d => {
+    const li = document.createElement('li');
+    li.className = 'flex justify-between items-center mb-1';
+    li.innerHTML = `<span>${d}</span><button class="removeDomain bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Remove</button>`;
+    li.querySelector('button').onclick = () => {
+      domains.splice(domains.indexOf(d),1);
+      updateTrustedUI(domains);
+    }
+    trustedList.appendChild(li);
+  });
+}
+
+addDomain.onclick = () => {
+  if(newDomain.value.trim() === '') return;
+  let domains = Array.from(trustedList.querySelectorAll('li span')).map(s=>s.textContent);
+  domains.push(newDomain.value.trim());
+  newDomain.value = '';
+  updateTrustedUI(domains);
+}
+
+saveSettingsBtn.onclick = async () => {
+  let domains = Array.from(trustedList.querySelectorAll('li span')).map(s=>s.textContent);
+  const payload = {
+    threshold: parseFloat(document.getElementById('threshold').value),
+    ml_weight: parseFloat(document.getElementById('ml_weight').value),
+    trusted_domains: domains
+  };
+  const res = await fetch('/admin/save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  if(res.ok){
+    saveNotif.classList.remove('hidden');
+    setTimeout(()=>saveNotif.classList.add('hidden'),2000);
+  }
+}
+
+// History Modal
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modalContent');
+function showDetails(index){
+  const row = document.querySelectorAll('#historyTable tr')[index];
+  const cells = row.querySelectorAll('td');
+  const details = {
+    user_id: cells[0].textContent,
+    timestamp: cells[1].textContent,
+    input: cells[2].textContent,
+    type: cells[3].textContent,
+    verdict: cells[4].textContent,
+    final_score: cells[5].textContent
+  };
+  modalContent.textContent = JSON.stringify(details, null, 2);
+  modal.classList.remove('hidden');
+}
+function closeModal(){ modal.classList.add('hidden'); }
+
+document.getElementById('clearHistory').onclick = async () => {
+  const res = await fetch('/admin/clear_history', {method:'POST'});
+  if(res.ok) location.reload();
+}
+</script>
+
+</body>
+</html>

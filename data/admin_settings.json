@@ -1,0 +1,27 @@
+{
+  "trusted_domains": [
+    "github.com",
+    "microsoft.com",
+    "openai.com",
+    "google.com"
+  ],
+  "sus_tokens": [
+    "login",
+    "secure",
+    "update",
+    "verify",
+    "account",
+    "bank",
+    "confirm",
+    "reset",
+    "billing",
+    "signin",
+    "password",
+    "urgent",
+    "ebay",
+    "paypal",
+    "free",
+    "prize"
+  ],
+  "dark_mode": false
+}

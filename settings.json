@@ -1,0 +1,13 @@
+{
+  "dark_mode": false,
+  "trusted_domains": [
+    "python.org",
+    "openai.com",
+    "google.com",
+    "paypal.com",
+    "microsoft.com",
+    "wikipedia.org",
+    "github.com",
+    "facebook.com"
+  ]
+}

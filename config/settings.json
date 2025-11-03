@@ -1,0 +1,23 @@
+{
+  "trusted_domains": [
+    "google.com",
+    "github.com",
+    "openai.com",
+    "microsoft.com"
+  ],
+  "sus_tokens": [
+    "login",
+    "secure",
+    "update",
+    "verify",
+    "account",
+    "bank",
+    "confirm",
+    "paypal",
+    "signin",
+    "wallet"
+  ],
+  "threshold": 0.5,
+  "theme_default": "dark",
+  "history": []
+}

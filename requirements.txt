@@ -1,0 +1,15 @@
+Flask>=2.2
+scikit-learn>=1.2
+numpy>=1.23
+pandas>=1.5
+joblib>=1.2
+tldextract>=5.1
+PyPDF2>=3.0
+python-docx>=0.8.11
+beautifulsoup4>=4.12
+lxml>=4.9
+werkzeug>=2.2
+
+# Optional boosters (install if available)
+lightgbm>=4.5
+xgboost>=2.1
