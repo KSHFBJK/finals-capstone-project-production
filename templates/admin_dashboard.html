@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishGuard Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800">
+  <div class="max-w-7xl mx-auto p-8">
+    <header class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-blue-600">PhishGuard Admin</h1>
+        <p class="text-sm text-gray-500">Manage trusted domains, settings and review scan history</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="http://127.0.0.1:5000" class="text-gray-500 hover:text-blue-600">User site</a>
+        <a href="/logout" class="bg-red-500 text-white px-3 py-2 rounded">Logout</a>
+      </div>
+    </header>
+
+    <section class="grid lg:grid-cols-3 gap-6 mb-6">
+      <!-- History / Search Panel -->
+      <div class="lg:col-span-2 bg-white rounded-2xl p-4 shadow">
+        <div class="flex gap-3 items-center mb-3">
+          <input id="searchInput" placeholder="Search domain or user_id" class="flex-grow border p-2 rounded" />
+          <select id="filterVerdict" class="border p-2 rounded">
+            <option value="">All verdicts</option>
+            <option value="phishing">Phishing</option>
+            <option value="suspicious">Suspicious</option>
+            <option value="legitimate">Legitimate</option>
+          </select>
+          <button id="btnSearch" class="bg-blue-600 text-white px-3 py-2 rounded">Search</button>
+          <button id="btnReload" class="bg-gray-100 px-3 py-2 rounded">Reload</button>
+        </div>
+
+        <div id="historyList" class="space-y-2 max-h-[56vh] overflow-auto"></div>
+
+        <div class="mt-3 flex justify-between items-center">
+          <div class="text-sm text-gray-500" id="historyCount"></div>
+          <div>
+            <button id="downloadAll" class="bg-blue-600 text-white px-3 py-1 rounded mr-2">Download JSON</button>
+            <button id="clearAll" class="bg-red-500 text-white px-3 py-1 rounded">Clear All</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings / Domains / Retrain Panel -->
+      <div class="bg-white rounded-2xl p-4 shadow">
+        <h3 class="font-semibold mb-2">Settings</h3>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-600">Threshold</label>
+          <input id="threshold" type="number" step="0.01" class="w-full border p-2 rounded" />
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-600">ML Weight</label>
+          <input id="ml_weight" type="number" step="0.01" class="w-full border p-2 rounded" />
+        </div>
+        <button id="saveSettings" class="bg-green-600 text-white px-4 py-2 rounded">Save Settings</button>
+
+        <hr class="my-4">
+
+        <h3 class="font-semibold mb-2">Trusted Domains</h3>
+        <div class="flex gap-2">
+          <input id="domainInput" placeholder="example.com" class="flex-grow border p-2 rounded" />
+          <button id="addDomain" class="bg-blue-600 text-white px-3 py-2 rounded">Add</button>
+        </div>
+        <div id="domainList" class="mt-3 space-y-2 text-sm"></div>
+
+        <hr class="my-4">
+
+        <h3 class="font-semibold mb-2">Retrain ML Model</h3>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-600">Upload CSV (optional)</label>
+          <input type="file" id="retrainCsv" accept=".csv" class="w-full border p-2 rounded" />
+        </div>
+        <button id="retrainModel" class="bg-purple-600 text-white px-4 py-2 rounded">Retrain Model</button>
+        <div id="retrainStatus" class="text-sm text-gray-500 mt-2"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 p-4">
+    <div class="bg-white rounded-lg p-4 max-w-3xl w-full">
+      <div class="flex justify-between items-start">
+        <h3 class="font-semibold" id="modalTitle">Entry Details</h3>
+        <button id="closeModal" class="text-gray-500">✖</button>
+      </div>
+      <div id="modalBody" class="mt-3 text-sm"></div>
+      <div class="mt-4 text-right">
+        <button id="removeEntry" class="bg-red-500 text-white px-3 py-2 rounded">Remove</button>
+        <button id="downloadEntry" class="bg-blue-600 text-white px-3 py-2 rounded">Download</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+async function getSettings(){
+  const r = await fetch('/api/settings');
+  return r.ok ? r.json() : null;
+}
+async function loadSettingsToUI(){
+  const s = await getSettings();
+  if(!s) return;
+  document.getElementById('threshold').value = s.threshold;
+  document.getElementById('ml_weight').value = s.ml_weight;
+  renderDomains(s.trusted_domains || []);
+}
+function renderDomains(domains){
+  const el = document.getElementById('domainList'); el.innerHTML = '';
+  domains.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'flex justify-between items-center gap-2';
+    div.innerHTML = `<div class="text-sm">${d}</div><button class="text-red-600" onclick="removeDomain('${d}')">Remove</button>`;
+    el.appendChild(div);
+  });
+}
+
+async function fetchHistory(q={}, show=true){
+  const params = new URLSearchParams(q).toString();
+  const url = '/api/history' + (params ? '?'+params : '');
+  const r = await fetch(url);
+  const data = await r.json();
+  renderHistory(data);
+  return data;
+}
+
+function renderHistory(list){
+  const box = document.getElementById('historyList');
+  box.innerHTML = '';
+  document.getElementById('historyCount').textContent = `${list.length} entries`;
+  list.forEach((h, idx) => {
+    const item = document.createElement('div');
+    item.className = 'p-3 border rounded hover:bg-gray-50 cursor-pointer flex justify-between items-start';
+    item.innerHTML = `
+      <div>
+        <div class="font-semibold">${h.domain || h.input || (h.uploaded_file ? 'File: '+h.uploaded_file : '')}</div>
+        <div class="text-xs text-gray-500">${h.timestamp} • user: <span class="font-mono">${h.user_id}</span></div>
+        <div class="text-xs text-gray-600 mt-1">${(h.reasons||[]).slice(0,3).join(' • ')}</div>
+      </div>
+      <div class="text-right">
+        <div class="${h.verdict==='phishing' ? 'text-red-500' : h.verdict==='suspicious' ? 'text-yellow-600' : 'text-green-600'} font-semibold">${h.verdict.toUpperCase()}</div>
+        <div class="text-xs text-gray-500 mt-2">score: ${h.final_score}</div>
+      </div>
+    `;
+    item.onclick = () => openDetailModal(h, idx);
+    box.appendChild(item);
+  });
+}
+
+let currentModalIndex = null, currentModalEntry = null;
+function openDetailModal(entry, idx){
+  currentModalIndex = idx;
+  currentModalEntry = entry;
+  document.getElementById('modalTitle').textContent = `${entry.domain || entry.input || 'Entry'} — ${entry.verdict.toUpperCase()}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="text-xs text-gray-500 mb-2">Timestamp: ${entry.timestamp} • user: <span class="font-mono">${entry.user_id}</span></div>
+    <div class="mb-2"><b>Input:</b> ${entry.input || ''}</div>
+    ${entry.uploaded_file ? `<div class="mb-2"><b>File:</b> <a href="/uploads/${encodeURIComponent(entry.uploaded_file)}" target="_blank" class="text-blue-600">${entry.uploaded_file}</a></div>` : ''}
+    <div class="mb-2"><b>Final score:</b> ${entry.final_score} • <b>ML prob:</b> ${entry.ml_probability}</div>
+    <div class="mb-2"><b>Per-model:</b><div class="mt-1 text-xs text-gray-600">${Object.entries(entry.per_model||{}).map(x=>`${x[0]}: ${x[1].toFixed(3)}`).join('<br>')}</div></div>
+    <div class="mb-2"><b>Reasons:</b><ul class="list-disc pl-5 text-sm text-gray-600">${(entry.reasons||[]).map(r=>`<li>${r}</li>`).join('')||'<li>None</li>'}</ul></div>
+  `;
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+document.getElementById('closeModal').onclick = () => document.getElementById('detailModal').classList.add('hidden');
+document.getElementById('downloadEntry').onclick = () => {
+  const blob = new Blob([JSON.stringify(currentModalEntry, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `entry-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url);
+};
+document.getElementById('removeEntry').onclick = async () => {
+  if(!confirm('Remove this entry?')) return;
+  const res = await fetch('/api/history/remove', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ index: currentModalIndex })});
+  const data = await res.json();
+  if(data.status === 'removed'){ alert('Removed'); document.getElementById('detailModal').classList.add('hidden'); loadAll(); }
+};
+
+document.getElementById('btnSearch').onclick = () => {
+  const q = {};
+  const v = document.getElementById('filterVerdict').value;
+  const s = document.getElementById('searchInput').value.trim();
+  if(v) q.verdict = v;
+  if(s){ q.domain = s; q.user_id = s; }
+  fetchHistory(q);
+};
+document.getElementById('btnReload').onclick = () => loadAll();
+
+document.getElementById('downloadAll').onclick = async () => {
+  const res = await fetch('/api/history/download');
+  const j = await res.json();
+  const blob = new Blob([JSON.stringify(j.history, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `history-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url);
+};
+
+document.getElementById('clearAll').onclick = async () => {
+  if(!confirm('Clear all history? This cannot be undone.')) return;
+  await fetch('/api/history/clear', { method:'POST' });
+  loadAll();
+};
+
+document.getElementById('addDomain').onclick = async () => {
+  const d = document.getElementById('domainInput').value.trim();
+  if(!d) return alert('Enter domain');
+  await fetch('/api/domain/add', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ domain: d })});
+  document.getElementById('domainInput').value = '';
+  loadSettingsToUI();
+};
+async function removeDomain(d){
+  if(!confirm('Remove domain '+d+'?')) return;
+  await fetch('/api/domain/remove', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ domain: d })});
+  loadSettingsToUI();
+}
+
+document.getElementById('saveSettings').onclick = async () => {
+  const body = { 
+    threshold: parseFloat(document.getElementById('threshold').value), 
+    ml_weight: parseFloat(document.getElementById('ml_weight').value), 
+    trusted_domains: Array.from(document.querySelectorAll('#domainList div')).map(el => el.firstChild.textContent) 
+  };
+  await fetch('/api/settings/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  alert('Saved');
+};
+
+// ------------------ Retrain Model Button ------------------
+document.getElementById('retrainModel').onclick = async () => {
+  if(!confirm('Retrain the ML model? This may take a few minutes.')) return;
+
+  const statusEl = document.getElementById('retrainStatus');
+  statusEl.textContent = 'Retraining... Please wait.';
+
+  const csvFile = document.getElementById('retrainCsv').files[0];
+  const formData = new FormData();
+  if(csvFile) formData.append('csv', csvFile);
+
+  try {
+    const res = await fetch('/api/retrain', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+    if(data.success){
+      statusEl.textContent = '✅ Model retrained successfully!';
+      alert('ML model retrained successfully!');
+      document.getElementById('retrainCsv').value = '';
+    } else {
+      statusEl.textContent = '⚠️ Retraining failed!';
+      alert('Retraining failed. See server logs.');
+    }
+  } catch(err){
+    console.error(err);
+    statusEl.textContent = '⚠️ Error during retraining!';
+    alert('Error during retraining. See console.');
+  }
+};
+
+async function loadAll(){ 
+  await loadSettingsToUI(); 
+  await fetchHistory(); 
+}
+
+loadAll();
+</script>
+</body>
+</html>

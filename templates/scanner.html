@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>PhishGuard - Scan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+  .bar-safe { background: linear-gradient(90deg,#34D399,#10B981); }
+  .bar-susp  { background: linear-gradient(90deg,#F59E0B,#F97316); }
+  .bar-phish { background: linear-gradient(90deg,#F43F5E,#EF4444); }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800">
+  <div class="max-w-3xl mx-auto py-12 px-6">
+    <header class="mb-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-blue-600">PhishGuard</h1>
+        <p class="text-sm text-gray-500">AI + heuristics for practical phishing detection</p>
+      </div>
+    </header>
+
+    <section data-aos="fade-up" class="bg-white rounded-2xl p-6 shadow">
+      <form id="scanForm" class="grid gap-4" enctype="multipart/form-data">
+        <label class="text-sm text-gray-600">Enter URL or paste Email</label>
+        <input id="urlInput" name="url" placeholder="https://example.com" class="w-full p-3 border rounded" />
+        <label class="text-sm text-gray-600">OR upload a file to scan</label>
+        <input type="file" name="file" id="fileInput" class="text-sm" />
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-500">Tip: include full URL (https://)</div>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Scan</button>
+        </div>
+      </form>
+
+      <div id="resultCard" class="mt-6 hidden border rounded-lg p-5 shadow-md bg-white"></div>
+    </section>
+
+    <section data-aos="fade-up" class="mt-8">
+      <h2 class="text-xl font-semibold mb-3 text-gray-700">Your Recent Scans</h2>
+      <div id="userHistory" class="space-y-3"></div>
+    </section>
+  </div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+AOS.init({ duration: 450, once: true });
+
+const scanForm = document.getElementById('scanForm');
+const resultCard = document.getElementById('resultCard');
+const userHistory = document.getElementById('userHistory');
+
+function verdictClass(verdict){
+  if (verdict === 'phishing') return 'bar-phish';
+  if (verdict === 'suspicious') return 'bar-susp';
+  return 'bar-safe';
+}
+
+function formatDomain(h){
+  if (h.type === 'file' && h.uploaded_file) return `<span class="italic text-sm text-gray-600">file: ${h.uploaded_file}</span>`;
+  return h.domain || (h.input && h.input.slice(0,120)) || '(unknown)';
+}
+
+function renderResult(data){
+  const cl = verdictClass(data.verdict);
+  const reasons = (data.reasons || []).map(r => `<li>${r}</li>`).join('');
+  const perModel = data.per_model || {};
+  const perModelHtml = Object.entries(perModel).map(([k,v]) => `<div class="text-xs text-gray-600">${k.toUpperCase()}: ${v.toFixed(3)}</div>`).join('');
+  const inputDisplay = data.type === 'file' && data.uploaded_file ? `<a href="/uploads/${encodeURIComponent(data.uploaded_file)}" class="text-blue-600 hover:underline">${data.uploaded_file}</a>` : (data.input || data.domain || '');
+
+  resultCard.innerHTML = `
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-3">
+          <div class="px-3 py-1 rounded text-sm font-semibold ${data.verdict === 'phishing' ? 'text-red-600 bg-red-50' : data.verdict === 'suspicious' ? 'text-yellow-600 bg-yellow-50' : 'text-green-600 bg-green-50'}">
+            ${data.verdict.toUpperCase()}
+          </div>
+          <div class="text-sm text-gray-500">${inputDisplay}</div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+          <strong>Final score:</strong> ${data.final_score} • <strong>ML prob:</strong> ${data.ml_probability}
+        </div>
+      </div>
+
+      <div class="text-right">
+        <div class="text-xs text-gray-400">Analyzed</div>
+        <div class="text-sm text-gray-600">${data.timestamp || ''}</div>
+        <div class="mt-2 text-xs text-gray-500">User: <span class="font-mono">${data.user_id || ''}</span></div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="w-full h-3 rounded-full overflow-hidden bg-gray-100">
+        <div class="${cl}" style="width:${Math.min(100, Math.round((data.final_score||0)*100))}%; height:100%"></div>
+      </div>
+    </div>
+
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <h4 class="text-sm font-semibold text-gray-700">Why this verdict?</h4>
+        <ul class="list-disc pl-5 text-sm text-gray-600 mt-2">${reasons || '<li>No heuristic flags</li>'}</ul>
+      </div>
+      <div>
+        <h4 class="text-sm font-semibold text-gray-700">Per-model probabilities</h4>
+        <div class="mt-2">${perModelHtml || '<div class="text-xs text-gray-500">Not available</div>'}</div>
+      </div>
+    </div>
+
+    <div class="mt-4 text-xs text-gray-400">Threshold: ${data.threshold}</div>
+  `;
+  resultCard.classList.remove('hidden');
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function loadHistory(){
+  try {
+    const res = await fetch('/history?json=1');
+    const hist = await res.json();
+    if (!hist.length) {
+      userHistory.innerHTML = '<div class="text-sm text-gray-500">No recent scans.</div>';
+      return;
+    }
+    userHistory.innerHTML = hist.slice(0,10).map(r => `
+      <div class="bg-white border rounded p-3 shadow-sm">
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-700 font-semibold">${formatDomain(r)}</div>
+          <div class="text-sm ${r.verdict==='phishing' ? 'text-red-500' : r.verdict==='suspicious' ? 'text-yellow-600' : 'text-green-600'}">${r.verdict.toUpperCase()}</div>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">${r.timestamp}</div>
+        <div class="mt-2 text-xs text-gray-500">${(r.reasons||[]).slice(0,3).join(' • ')}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    userHistory.innerHTML = `<div class="text-red-500">Failed to load history</div>`;
+  }
+}
+
+scanForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(scanForm);
+  try {
+    const res = await fetch('/scan', { method: 'POST', body: fd });
+    const data = await res.json();
+    const d = Array.isArray(data) ? data[0] : data;
+    renderResult(d);
+    loadHistory();
+  } catch (err) {
+    resultCard.innerHTML = `<div class="text-red-500">Scan failed: ${err.message}</div>`;
+    resultCard.classList.remove('hidden');
+  }
+});
+
+loadHistory();
+</script>
+</body>
+</html>

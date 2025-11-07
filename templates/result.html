@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Scan Result — PhishGuard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl">
+    <h1 class="text-3xl font-bold text-blue-600 mb-4">🔍 Scan Result</h1>
+
+    <div class="flex items-center gap-6">
+      <canvas id="scoreChart" width="140" height="140"></canvas>
+      <div>
+        <div class="text-sm text-gray-500">Input</div>
+        <div class="text-lg font-semibold mb-2">
+          {{ result.input | default('(file or unknown)') }}
+        </div>
+
+        {% if result.uploaded_file %}
+        <div class="text-xs text-gray-600">
+          File: <a href="/uploads/{{ result.uploaded_file }}" class="text-blue-600 hover:underline">{{ result.uploaded_file }}</a>
+        </div>
+        {% endif %}
+
+        <div class="mt-4"><b>Verdict:</b>
+          {% set verdict_safe = result.verdict | default('unknown') %}
+          <span class="{% if verdict_safe == 'phishing' %}text-red-600{% elif verdict_safe == 'suspicious' %}text-yellow-600{% else %}text-green-600{% endif %} font-bold">
+            {{ verdict_safe | capitalize }}
+          </span>
+        </div>
+
+        <div class="text-sm text-gray-500 mt-2">
+          Final score: {{ result.final_score | default(0) }}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <h3 class="text-sm font-semibold">Why:</h3>
+      <ul class="list-disc pl-5 text-sm text-gray-600">
+        {% if result.reasons %}
+          {% for r in result.reasons %}
+            <li>{{ r }}</li>
+          {% endfor %}
+        {% else %}
+          <li>No heuristic flags</li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="mt-6 flex justify-between">
+      <a href="/" class="bg-blue-600 text-white px-4 py-2 rounded">Scan Again</a>
+      <a href="/history" class="text-blue-600">View History</a>
+    </div>
+  </div>
+
+<script>
+// Safe JS values
+const ctx = document.getElementById('scoreChart')?.getContext('2d');
+const score = {{ result.final_score | default(0) }};
+const verdictStr = "{{ result.verdict | default('unknown') }}".toLowerCase();
+
+// Determine color safely
+let color;
+switch(verdictStr){
+  case "phishing": color = "#ef4444"; break;
+  case "suspicious": color = "#f59e0b"; break;
+  default: color = "#10b981";
+}
+
+// Draw donut chart only if canvas exists
+if(ctx){
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [score*100, 100 - (score*100)],
+        backgroundColor: [color, '#e5e7eb'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: "75%",
+      plugins: {
+        tooltip: { enabled: false },
+        legend: { display: false }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

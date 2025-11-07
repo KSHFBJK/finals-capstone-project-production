@@ -1,1 +1,280 @@
-[]
+[
+  {
+    "input": "https://exodus-backupcenter.vercel.app",
+    "domain": "exodus-backupcenter.vercel.app",
+    "type": "url",
+    "ml_probability": 0.701,
+    "heuristic_score": 0.0,
+    "final_score": 0.4206,
+    "verdict": "suspicious",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.70"
+    ],
+    "timestamp": "2025-11-07 03:48:58",
+    "per_model": {
+      "lr": 0.8578534539877148,
+      "rf": 0.5733333333333334,
+      "nb": 0.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.35196957859731953,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "http://confirm-banking-info.com",
+    "domain": "confirm-banking-info.com",
+    "type": "url",
+    "ml_probability": 0.9797,
+    "heuristic_score": 0.3099,
+    "final_score": 0.7118,
+    "verdict": "phishing",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.98"
+    ],
+    "timestamp": "2025-11-07 03:48:08",
+    "per_model": {
+      "lr": 0.9732326192923352,
+      "rf": 0.8633333333333333,
+      "nb": 1.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.9933604541137578,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "confirm-banking-info.com",
+    "domain": "",
+    "type": "url",
+    "ml_probability": 0.2946,
+    "heuristic_score": 0.3099,
+    "final_score": 0.3007,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.29"
+    ],
+    "timestamp": "2025-11-07 03:47:50",
+    "per_model": {
+      "lr": 3.8366345700928595e-05,
+      "rf": 0.45,
+      "nb": 0.0,
+      "xgb": 0.0009035070543177426,
+      "cb": 0.8799412701898157,
+      "lgb": 8.226339660166935e-07
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "https://www.refixupdatenode.site.automaticnoderefi...",
+    "domain": "www.refixupdatenode.site.automaticnoderefi...",
+    "type": "url",
+    "ml_probability": 0.797,
+    "heuristic_score": 0.5,
+    "final_score": 0.6782,
+    "verdict": "suspicious",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (1)",
+      "⚠️ Subdomain depth suspicious (6)",
+      "ML: probability 0.80"
+    ],
+    "timestamp": "2025-11-07 03:44:38",
+    "per_model": {
+      "lr": 0.9913485820215246,
+      "rf": 0.58,
+      "nb": 0.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.641625831870263,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "exodus-backupcenter.vercel.app",
+    "domain": "",
+    "type": "url",
+    "ml_probability": 0.6091,
+    "heuristic_score": 0.0,
+    "final_score": 0.3655,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.61"
+    ],
+    "timestamp": "2025-11-07 03:44:14",
+    "per_model": {
+      "lr": 4.162623961327947e-06,
+      "rf": 0.4,
+      "nb": 0.0,
+      "xgb": 0.9822108149528503,
+      "cb": 0.4471384533629293,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "exodus-backupcenter.vercel.app",
+    "domain": "",
+    "type": "url",
+    "ml_probability": 0.6091,
+    "heuristic_score": 0.0,
+    "final_score": 0.3655,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.61"
+    ],
+    "timestamp": "2025-11-07 03:44:03",
+    "per_model": {
+      "lr": 4.162623961327947e-06,
+      "rf": 0.4,
+      "nb": 0.0,
+      "xgb": 0.9822108149528503,
+      "cb": 0.4471384533629293,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "https://exodus-backupcenter.vercel.app",
+    "domain": "exodus-backupcenter.vercel.app",
+    "type": "url",
+    "ml_probability": 0.701,
+    "heuristic_score": 0.0,
+    "final_score": 0.4206,
+    "verdict": "suspicious",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.70"
+    ],
+    "timestamp": "2025-11-07 03:33:40",
+    "per_model": {
+      "lr": 0.8578534539877148,
+      "rf": 0.5733333333333334,
+      "nb": 0.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.35196957859731953,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "https://www.facebook.com",
+    "domain": "www.facebook.com",
+    "type": "url",
+    "ml_probability": 0.0182,
+    "heuristic_score": 0.0,
+    "final_score": 0.0109,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.02"
+    ],
+    "timestamp": "2025-11-07 03:29:10",
+    "per_model": {
+      "lr": 0.001211719405328382,
+      "rf": 0.13666666666666666,
+      "nb": 0.0,
+      "xgb": 0.012227537110447884,
+      "cb": 0.0004195093216181826,
+      "lgb": 8.226339660167065e-07
+    },
+    "uploaded_file": null,
+    "user_id": "f92bd7c2cae14803"
+  },
+  {
+    "input": "http://confirm-banking-info.com",
+    "domain": "confirm-banking-info.com",
+    "type": "url",
+    "ml_probability": 0.9797,
+    "heuristic_score": 0.3099,
+    "final_score": 0.7118,
+    "verdict": "phishing",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.98"
+    ],
+    "timestamp": "2025-11-07 02:26:47",
+    "per_model": {
+      "lr": 0.9732326192923352,
+      "rf": 0.8633333333333333,
+      "nb": 1.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.9933604541137578,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "c3474f3e50c04136"
+  },
+  {
+    "input": "https://www.facebook.com",
+    "domain": "www.facebook.com",
+    "type": "url",
+    "ml_probability": 0.0182,
+    "heuristic_score": 0.0,
+    "final_score": 0.0109,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.02"
+    ],
+    "timestamp": "2025-11-07 02:22:25",
+    "per_model": {
+      "lr": 0.001211719405328382,
+      "rf": 0.13666666666666666,
+      "nb": 0.0,
+      "xgb": 0.012227537110447884,
+      "cb": 0.0004195093216181826,
+      "lgb": 8.226339660167065e-07
+    },
+    "uploaded_file": null,
+    "user_id": "c3474f3e50c04136"
+  },
+  {
+    "input": "https://www.facebook.com",
+    "domain": "www.facebook.com",
+    "type": "url",
+    "ml_probability": 0.0182,
+    "heuristic_score": 0.0,
+    "final_score": 0.0109,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [],
+    "timestamp": "2025-11-07 01:44:08",
+    "per_model": {
+      "lr": 0.001211719405328382,
+      "rf": 0.13666666666666666,
+      "nb": 0.0,
+      "xgb": 0.012227537110447884,
+      "cb": 0.0004195093216181826,
+      "lgb": 8.226339660167065e-07
+    },
+    "uploaded_file": null,
+    "user_id": "c3474f3e50c04136"
+  }
+]
