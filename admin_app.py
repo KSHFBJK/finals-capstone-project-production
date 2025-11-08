@@ -199,4 +199,5 @@ def serve_upload(filename):
 # Run App
 # ------------------------------
 if __name__ == "__main__":
-    APP.run(host="0.0.0.0", port=5050, debug=True)
+    from waitress import serve
+    serve(host="0.0.0.0", port=8080)
