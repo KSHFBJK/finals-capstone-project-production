@@ -1,9 +1,13 @@
 {
-  "threshold": 0.7,
-  "ml_weight": 0.6,
+  "threshold": 0.6,
+  "ml_weight": 0.5,
   "trusted_domains": [
     "https://www.facebook.com",
-    "https://www.youtube.com"
+    "https://www.youtube.com",
+    "https://www.google.com"
   ],
-  "last_updated": "2025-11-07T01:41:33.107631"
+  "last_updated": "2025-11-12T13:41:01.422282",
+  "admin_pass_hash": "scrypt:32768:8:1$Tak6iyTAYMXxb6uU$0fc79957e584f42ebf9d59638a3983d485e720e3dd5fd77918f37bc41cf680bb7356d59e579659eb43ea03d864955c0be73f667ddc9d828dbb89ec561d0a7da0",
+  "dark_mode": false,
+  "admin_pass": "admin123"
 }

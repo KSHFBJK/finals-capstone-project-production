@@ -1,5 +1,159 @@
 [
   {
+    "input": "http://chase-bank-update.com",
+    "domain": "chase-bank-update.com",
+    "type": "url",
+    "ml_probability": 0.5278,
+    "heuristic_score": 0.3099,
+    "final_score": 0.4406,
+    "verdict": "suspicious",
+    "threshold": 0.6,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.53"
+    ],
+    "timestamp": "2025-11-12 13:41:12",
+    "per_model": {
+      "lr": 0.9823364894175153,
+      "rf": 0.75,
+      "nb": 1.0,
+      "xgb": 0.012836716137826443,
+      "cb": 0.996903509387454,
+      "lgb": 8.226339660170792e-07
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
+    "input": "http://chase-bank-update.com",
+    "domain": "chase-bank-update.com",
+    "type": "url",
+    "ml_probability": 0.5278,
+    "heuristic_score": 0.3099,
+    "final_score": 0.4406,
+    "verdict": "legitimate",
+    "threshold": 0.8,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.53"
+    ],
+    "timestamp": "2025-11-12 13:40:24",
+    "per_model": {
+      "lr": 0.9823364894175153,
+      "rf": 0.75,
+      "nb": 1.0,
+      "xgb": 0.012836716137826443,
+      "cb": 0.996903509387454,
+      "lgb": 8.226339660170792e-07
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
+    "input": "http://chase-bank-update.com",
+    "domain": "chase-bank-update.com",
+    "type": "url",
+    "ml_probability": 0.5278,
+    "heuristic_score": 0.3099,
+    "final_score": 0.4406,
+    "verdict": "legitimate",
+    "threshold": 0.8,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.53"
+    ],
+    "timestamp": "2025-11-12 13:40:08",
+    "per_model": {
+      "lr": 0.9823364894175153,
+      "rf": 0.75,
+      "nb": 1.0,
+      "xgb": 0.012836716137826443,
+      "cb": 0.996903509387454,
+      "lgb": 8.226339660170792e-07
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
+    "input": "http://confirm-banking-info.com",
+    "domain": "confirm-banking-info.com",
+    "type": "url",
+    "ml_probability": 0.9797,
+    "heuristic_score": 0.3099,
+    "final_score": 0.7118,
+    "verdict": "suspicious",
+    "threshold": 0.8,
+    "trusted": false,
+    "reasons": [
+      "⚠️ Suspicious terms detected (2)",
+      "ML: probability 0.98"
+    ],
+    "timestamp": "2025-11-12 13:39:56",
+    "per_model": {
+      "lr": 0.9732326192923352,
+      "rf": 0.8633333333333333,
+      "nb": 1.0,
+      "xgb": 0.9987420439720154,
+      "cb": 0.9933604541137578,
+      "lgb": 0.9999991773660758
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
+    "input": "https://www.google.com",
+    "domain": "www.google.com",
+    "type": "url",
+    "ml_probability": 0.0003,
+    "heuristic_score": 0.0,
+    "final_score": 0.0002,
+    "verdict": "legitimate",
+    "threshold": 0.8,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.00"
+    ],
+    "timestamp": "2025-11-12 13:39:35",
+    "per_model": {
+      "lr": 0.0003610095965833311,
+      "rf": 0.0,
+      "nb": 0.0,
+      "xgb": 0.0009035070543177426,
+      "cb": 0.00029990965573560986,
+      "lgb": 8.226339660167096e-07
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
+    "input": "https://www.facebook.com",
+    "domain": "www.facebook.com",
+    "type": "url",
+    "ml_probability": 0.0182,
+    "heuristic_score": 0.0,
+    "final_score": 0.0109,
+    "verdict": "legitimate",
+    "threshold": 0.7,
+    "trusted": false,
+    "reasons": [
+      "ML: probability 0.02"
+    ],
+    "timestamp": "2025-11-12 13:14:57",
+    "per_model": {
+      "lr": 0.001211719405328382,
+      "rf": 0.13666666666666666,
+      "nb": 0.0,
+      "xgb": 0.012227537110447884,
+      "cb": 0.0004195093216181826,
+      "lgb": 8.226339660167065e-07
+    },
+    "uploaded_file": null,
+    "user_id": "422f9e8043b84b1e"
+  },
+  {
     "input": "https://exodus-backupcenter.vercel.app",
     "domain": "exodus-backupcenter.vercel.app",
     "type": "url",

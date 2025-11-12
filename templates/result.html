@@ -2,94 +2,47 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Scan Result — PhishGuard</title>
+<title>PhishGuard - Scan</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+  .bar-safe  { background: linear-gradient(90deg,#34D399,#10B981); }
+  .bar-susp  { background: linear-gradient(90deg,#F59E0B,#F97316); }
+  .bar-phish { background: linear-gradient(90deg,#F43F5E,#EF4444); }
+</style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
-  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl">
-    <h1 class="text-3xl font-bold text-blue-600 mb-4">🔍 Scan Result</h1>
+<body class="bg-gray-50 min-h-screen text-gray-800">
 
-    <div class="flex items-center gap-6">
-      <canvas id="scoreChart" width="140" height="140"></canvas>
-      <div>
-        <div class="text-sm text-gray-500">Input</div>
-        <div class="text-lg font-semibold mb-2">
-          {{ result.input | default('(file or unknown)') }}
-        </div>
+<div class="max-w-3xl mx-auto py-12 px-6">
+  <header class="mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-blue-600">PhishGuard</h1>
+      <p class="text-sm text-gray-500">AI + heuristics for practical phishing detection</p>
+    </div>
+  </header>
 
-        {% if result.uploaded_file %}
-        <div class="text-xs text-gray-600">
-          File: <a href="/uploads/{{ result.uploaded_file }}" class="text-blue-600 hover:underline">{{ result.uploaded_file }}</a>
-        </div>
-        {% endif %}
-
-        <div class="mt-4"><b>Verdict:</b>
-          {% set verdict_safe = result.verdict | default('unknown') %}
-          <span class="{% if verdict_safe == 'phishing' %}text-red-600{% elif verdict_safe == 'suspicious' %}text-yellow-600{% else %}text-green-600{% endif %} font-bold">
-            {{ verdict_safe | capitalize }}
-          </span>
-        </div>
-
-        <div class="text-sm text-gray-500 mt-2">
-          Final score: {{ result.final_score | default(0) }}
-        </div>
+  <section data-aos="fade-up" class="bg-white rounded-2xl p-6 shadow">
+    <form id="scanForm" class="grid gap-4" enctype="multipart/form-data">
+      <label class="text-sm text-gray-600">Enter URL or paste Email</label>
+      <input id="urlInput" name="url" placeholder="https://example.com" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+      <label class="text-sm text-gray-600">OR upload a file to scan</label>
+      <input type="file" name="file" id="fileInput" class="text-sm"/>
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-500">Tip: include full URL (https://)</div>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Scan</button>
       </div>
-    </div>
+    </form>
 
-    <div class="mt-6">
-      <h3 class="text-sm font-semibold">Why:</h3>
-      <ul class="list-disc pl-5 text-sm text-gray-600">
-        {% if result.reasons %}
-          {% for r in result.reasons %}
-            <li>{{ r }}</li>
-          {% endfor %}
-        {% else %}
-          <li>No heuristic flags</li>
-        {% endif %}
-      </ul>
-    </div>
+    <div id="resultCard" class="mt-6 hidden border rounded-lg p-5 shadow-md bg-white"></div>
+  </section>
 
-    <div class="mt-6 flex justify-between">
-      <a href="/" class="bg-blue-600 text-white px-4 py-2 rounded">Scan Again</a>
-      <a href="/history" class="text-blue-600">View History</a>
-    </div>
-  </div>
+  <section data-aos="fade-up" class="mt-8">
+    <h2 class="text-xl font-semibold mb-3 text-gray-700">Your Recent Scans</h2>
+    <div id="userHistory" class="space-y-3"></div>
+  </section>
+</div>
 
-<script>
-// Safe JS values
-const ctx = document.getElementById('scoreChart')?.getContext('2d');
-const score = {{ result.final_score | default(0) }};
-const verdictStr = "{{ result.verdict | default('unknown') }}".toLowerCase();
-
-// Determine color safely
-let color;
-switch(verdictStr){
-  case "phishing": color = "#ef4444"; break;
-  case "suspicious": color = "#f59e0b"; break;
-  default: color = "#10b981";
-}
-
-// Draw donut chart only if canvas exists
-if(ctx){
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: [score*100, 100 - (score*100)],
-        backgroundColor: [color, '#e5e7eb'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      cutout: "75%",
-      plugins: {
-        tooltip: { enabled: false },
-        legend: { display: false }
-      }
-    }
-  });
-}
-</script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/static/js/main.js"></script>
 </body>
 </html>
